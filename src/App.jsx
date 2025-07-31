@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import TransactionsPage from "./pages/TransactionPage";
 import BudgetPage from "./pages/BudgetPage";
 import {Sidebar} from "@/components/Sidebar"

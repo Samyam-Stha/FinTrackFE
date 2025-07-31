@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { TransactionFilters } from "@/components/TransactionFilter";
 import { TransactionsTable } from "@/components/TransactionsTable";
-import AddTransactionModal from "@/components/Dashboard/AddTransactionModal";
+import AddTransactionModal from "@/components/dashboard/AddTransactionModal";
 
 export default function TransactionsPage() {
   const [showModal, setShowModal] = useState(false);
