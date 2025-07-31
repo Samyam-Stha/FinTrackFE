@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { formatNPR } from '@/utils/formatCurrency';
 import { DollarSign, TrendingUp, Calendar, AlertTriangle, CheckCircle2, ArrowDownRight, ArrowUpRight, Target, Plus } from 'lucide-react';
 import { getCurrentUser } from "@/utils/useAuth";
-import SetSavingsGoalModal from '@/Components/SetSavingsGoalModal';
+import SetSavingsGoalModal from '@/components/SetSavingsGoalModal';
 
 const SavingPage = () => {
     const user = getCurrentUser();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import PastBudgetHistory from '../Components/PastBudgetHistory';
+import PastBudgetHistory from '../components/PastBudgetHistory';
 
 const BudgetPage = () => {
   const [budgets, setBudgets] = useState([]);

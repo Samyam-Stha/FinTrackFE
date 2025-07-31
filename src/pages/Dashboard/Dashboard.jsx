@@ -16,11 +16,11 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import AddTransactionModal from "@/Components/Dashboard/AddTransactionModal";
-import Overview from "@/Components/Dashboard/Overview";
-import { BudgetProgress } from "@/Components/Dashboard/BudgetProgress";
-import { RecentTransactions } from "@/Components/Dashboard/RecentTransactions";
-import ExpensePieChart from "@/Components/Dashboard/ExpensePieChart";
+import AddTransactionModal from "@/components/Dashboard/AddTransactionModal";
+import Overview from "@/components/Dashboard/Overview";
+import { BudgetProgress } from "@/components/Dashboard/BudgetProgress";
+import { RecentTransactions } from "@/components/Dashboard/RecentTransactions";
+import ExpensePieChart from "@/components/Dashboard/ExpensePieChart";
 import { format } from "date-fns";
 
 const Dashboard = () => {

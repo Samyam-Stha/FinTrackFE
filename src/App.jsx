@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sidebar } from "./components/sidebar";
-import { getCurrentUser } from "./utils/useAuth";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import TransactionsPage from "./pages/TransactionPage";
 import BudgetPage from "./pages/BudgetPage";
+import {Sidebar} from "@/components/Sidebar"
 // import ReportPage from "./pages/ReportPage";
 import SettingsPage from "./pages/SettingsPage";
 import SavingPage from "./pages/SavingPage";

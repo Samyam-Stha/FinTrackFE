@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { TransactionFilters } from "@/Components/TransactionFilter";
-import { TransactionsTable } from "@/Components/TransactionsTable";
-import AddTransactionModal from "@/Components/Dashboard/AddTransactionModal";
+import { TransactionFilters } from "@/components/TransactionFilter";
+import { TransactionsTable } from "@/components/TransactionsTable";
+import AddTransactionModal from "@/components/Dashboard/AddTransactionModal";
 
 export default function TransactionsPage() {
   const [showModal, setShowModal] = useState(false);

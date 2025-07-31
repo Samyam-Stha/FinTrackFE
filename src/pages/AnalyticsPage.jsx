@@ -69,11 +69,11 @@ import {
   ResponsiveContainer,
   ReferenceArea,
 } from 'recharts';
-import BudgetComparison from '@/Components/BudgetComparison';
-import BudgetCategoryComparison from '@/Components/BudgetCategoryComparison';
-import BudgetComparisonChart from '@/Components/BudgetComparisonChart';
-import IncomeExpenseSavingsChart from '@/Components/IncomeExpenseSavingsChart';
-import CategoryContributionToSavings from '@/Components/CategoryContributionToSavings';
+import BudgetComparison from '@/components/BudgetComparison';
+import BudgetCategoryComparison from '@/components/BudgetCategoryComparison';
+import BudgetComparisonChart from '@/components/BudgetComparisonChart';
+import IncomeExpenseSavingsChart from '@/components/IncomeExpenseSavingsChart';
+import CategoryContributionToSavings from '@/components/CategoryContributionToSavings';
 
 const intervals = [
   { value: "daily", label: "Daily", icon: CalendarDays },
