@@ -1,6 +1,5 @@
 // src/components/ExpensePieChart.jsx
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import {
   PieChart,
   Pie,
@@ -67,35 +66,6 @@ export default function ExpensePieChart({ isDark, interval }) {
 
   useEffect(() => {
     fetchExpenses();
-
-    // Initialize Socket.IO connection
-    const socket = io("https://fin-track-be.vercel.app", {
-      withCredentials: true
-    });
-
-    // Listen for transaction events
-    socket.on("transaction:added", ({ transaction }) => {
-      if (transaction.type === "expense") {
-        fetchExpenses(); // Refresh the chart data
-      }
-    });
-
-    socket.on("transaction:updated", ({ transaction }) => {
-      if (transaction.type === "expense") {
-        fetchExpenses(); // Refresh the chart data
-      }
-    });
-
-    socket.on("transaction:deleted", ({ transaction }) => {
-      if (transaction.type === "expense") {
-        fetchExpenses(); // Refresh the chart data
-      }
-    });
-
-    // Cleanup on unmount
-    return () => {
-      socket.disconnect();
-    };
   }, [interval]);
 
   if (!data || data.length === 0) {

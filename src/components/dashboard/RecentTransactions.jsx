@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { io } from "socket.io-client";
 import {
   Table,
   TableBody,
@@ -47,52 +46,6 @@ export function RecentTransactions() {
     };
 
     fetchTransactions();
-
-    // Initialize Socket.IO connection
-    const socket = io("https://fin-track-be.vercel.app", {
-      withCredentials: true
-    });
-
-    // Listen for transaction events
-    socket.on("transaction:added", ({ transaction }) => {
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-      const txDate = new Date(transaction.date);
-
-      if (txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear) {
-        setTransactions(prev => {
-          const updated = [transaction, ...prev];
-          return updated.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        });
-      }
-    });
-
-    socket.on("transaction:updated", ({ transaction }) => {
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-      const txDate = new Date(transaction.date);
-
-      if (txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear) {
-        setTransactions(prev => {
-          const updated = prev.map(t => t.id === transaction.id ? transaction : t);
-          return updated.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        });
-      } else {
-        // If the updated transaction is no longer in current month, remove it
-        setTransactions(prev => prev.filter(t => t.id !== transaction.id));
-      }
-    });
-
-    socket.on("transaction:deleted", ({ transactionId }) => {
-      setTransactions(prev => prev.filter(t => t.id !== transactionId));
-    });
-
-    // Cleanup on unmount
-    return () => {
-      socket.disconnect();
-    };
   }, []);
 
   return (

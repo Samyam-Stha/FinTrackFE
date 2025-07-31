@@ -7,7 +7,6 @@ import {
   Plus,
 } from "lucide-react";
 import axios from "axios";
-import { io } from "socket.io-client";
 import { getCurrentUser } from "../../utils/useAuth";
 import {
   Card,
@@ -37,42 +36,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchTransactions();
-
-    // Initialize Socket.IO connection
-    const socket = io("https://fin-track-be.vercel.app", {
-      withCredentials: true
-    });
-
-    // Listen for transaction events
-    socket.on("transaction:added", ({ userId, transaction }) => {
-      if (userId === user?.id) {
-        setTransactions(prev => [...prev, transaction]);
-        updateDashboardStats([...transactions, transaction]);
-      }
-    });
-
-    socket.on("transaction:updated", ({ userId, transaction }) => {
-      if (userId === user?.id) {
-        setTransactions(prev =>
-          prev.map(t => t.id === transaction.id ? transaction : t)
-        );
-        updateDashboardStats(transactions.map(t =>
-          t.id === transaction.id ? transaction : t
-        ));
-      }
-    });
-
-    socket.on("transaction:deleted", ({ userId, transactionId }) => {
-      if (userId === user?.id) {
-        setTransactions(prev => prev.filter(t => t.id !== transactionId));
-        updateDashboardStats(transactions.filter(t => t.id !== transactionId));
-      }
-    });
-
-    // Cleanup on unmount
-    return () => {
-      socket.disconnect();
-    };
   }, [user?.id]);
 
   useEffect(() => {

@@ -14,7 +14,6 @@ import {
 } from "recharts";
 import axios from "axios";
 import { format, parseISO, startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, getWeek } from "date-fns";
-import { io } from "socket.io-client";
 import { getCurrentUser } from "@/utils/useAuth";
 import { formatNPR } from "../../utils/formatCurrency";
 
@@ -26,29 +25,6 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
 
   useEffect(() => {
     fetchSummary();
-
-    // Initialize Socket.IO connection
-    const socket = io("https://fin-track-be.vercel.app", {
-      withCredentials: true
-    });
-
-    // Listen for transaction events
-    socket.on("transaction:added", () => {
-      fetchSummary();
-    });
-
-    socket.on("transaction:updated", () => {
-      fetchSummary();
-    });
-
-    socket.on("transaction:deleted", () => {
-      fetchSummary();
-    });
-
-    // Cleanup on unmount
-    return () => {
-      socket.disconnect();
-    };
   }, [interval]);
 
   const fetchSummary = async () => {
