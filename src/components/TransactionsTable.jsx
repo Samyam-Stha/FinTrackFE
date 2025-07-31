@@ -107,7 +107,7 @@ export function TransactionsTable({ filters = {} }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginated.map((tx) => {
+          {paginated?.map((tx) => {
             console.log("Transaction date from backend:", tx.date);
             const dateObj = new Date(tx.date);
             console.log("Parsed date object:", dateObj);

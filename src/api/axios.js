@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL:"https://fin-track-be.vercel.app/api/",
 });
 
 export default api;
