@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./AuthForm.css";
 import { toast } from "react-toastify";
 
-const AuthForm = () => {
+export const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
@@ -332,5 +332,3 @@ const AuthForm = () => {
     </div>
   );
 };
-
-export default AuthForm;
