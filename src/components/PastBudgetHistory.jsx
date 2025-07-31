@@ -18,7 +18,7 @@ const PastBudgetHistory = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`http://localhost:5000/api/budget/history?month=${selectedMonth}`, {
+        const res = await axios.get(`https://fin-track-be.vercel.app/api/budget/history?month=${selectedMonth}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setHistory(res.data);

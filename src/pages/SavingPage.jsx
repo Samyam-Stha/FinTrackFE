@@ -40,7 +40,7 @@ const SavingPage = () => {
 
     const fetchMonthlySavings = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/savings/monthly", {
+            const res = await axios.get("https://fin-track-be.vercel.app/api/savings/monthly", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMonthlySavings(res.data);
@@ -54,7 +54,7 @@ const SavingPage = () => {
 
     const fetchSavingsGoal = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/savings/goal", {
+            const res = await axios.get("https://fin-track-be.vercel.app/api/savings/goal", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setSavingsGoal(res.data);
@@ -122,7 +122,7 @@ const SavingPage = () => {
         <div className="space-y-6 p-4">
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl font-bold tracking-tight">Savings Overview</h1>
-                <Button 
+                <Button
                     onClick={() => setIsGoalModalOpen(true)}
                     className="flex items-center gap-2"
                 >
@@ -130,7 +130,7 @@ const SavingPage = () => {
                     {savingsGoal.hasGoal ? 'Update Goal' : 'Set Goal'}
                 </Button>
             </div>
-            
+
             {/* Savings Goal Card */}
             {savingsGoal.hasGoal && (
                 <Card>
@@ -157,18 +157,17 @@ const SavingPage = () => {
                                 </div>
                                 <div className="text-center">
                                     <div className="text-sm text-gray-500">Goal Status</div>
-                                    <div className={`text-xl font-bold ${
-                                        savingsGoal.status === "achieved" ? 'text-green-600' : 
-                                        savingsGoal.status === "in_progress" ? 'text-blue-600' : 
-                                        'text-orange-600'
-                                    }`}>
-                                        {savingsGoal.status === "achieved" ? 'Achieved' : 
-                                         savingsGoal.status === "in_progress" ? 'In Progress' : 
-                                         'Below Goal'}
+                                    <div className={`text-xl font-bold ${savingsGoal.status === "achieved" ? 'text-green-600' :
+                                            savingsGoal.status === "in_progress" ? 'text-blue-600' :
+                                                'text-orange-600'
+                                        }`}>
+                                        {savingsGoal.status === "achieved" ? 'Achieved' :
+                                            savingsGoal.status === "in_progress" ? 'In Progress' :
+                                                'Below Goal'}
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
                                     <span className="text-gray-500">Goal Maintenance</span>
@@ -196,21 +195,21 @@ const SavingPage = () => {
                                     Excellent! You've achieved your savings goal of {formatNPR(savingsGoal.initialGoal)}
                                 </div>
                             )}
-                            
+
                             {savingsGoal.status === "in_progress" && (
                                 <div className="text-sm text-blue-600 mt-2 flex items-center gap-2">
                                     <ArrowUpRight className="h-4 w-4" />
                                     Good progress! You've saved {formatNPR(savingsGoal.currentSavings)} out of your {formatNPR(savingsGoal.initialGoal)} goal
                                 </div>
                             )}
-                            
+
                             {savingsGoal.status === "below_goal" && savingsGoal.currentSavings > 0 && (
                                 <div className="text-sm text-orange-500 mt-2 flex items-center gap-2">
                                     <AlertTriangle className="h-4 w-4" />
                                     Your current savings of {formatNPR(savingsGoal.currentSavings)} is below your goal of {formatNPR(savingsGoal.initialGoal)}
                                 </div>
                             )}
-                            
+
                             {savingsGoal.status === "below_goal" && savingsGoal.currentSavings <= 0 && (
                                 <div className="text-sm text-red-500 mt-2 flex items-center gap-2">
                                     <AlertTriangle className="h-4 w-4" />
@@ -234,10 +233,10 @@ const SavingPage = () => {
                     <CardContent>
                         <div className="text-center space-y-4">
                             <p className="text-gray-600">
-                                Set a monthly savings goal. The progress bar will show 100% when your balance meets or exceeds the goal, 
+                                Set a monthly savings goal. The progress bar will show 100% when your balance meets or exceeds the goal,
                                 and decrease as your balance drops below the goal due to expenses.
                             </p>
-                            <Button 
+                            <Button
                                 onClick={() => setIsGoalModalOpen(true)}
                                 className="flex items-center gap-2 mx-auto"
                             >

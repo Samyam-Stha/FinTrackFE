@@ -25,7 +25,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
   const fetchCategories = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/categories?account=${form.account}`,
+        `https://fin-track-be.vercel.app/api/categories?account=${form.account}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -73,7 +73,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/categories",
+        "https://fin-track-be.vercel.app/api/categories",
         { name: newCategory, account: form.account },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -91,7 +91,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
   const handleDeleteCategory = async (categoryName) => {
     if (!window.confirm(`Delete category '${categoryName}'? This cannot be undone.`)) return;
     try {
-      await axios.delete(`http://localhost:5000/api/categories?name=${encodeURIComponent(categoryName)}&account=${encodeURIComponent(form.account)}`, {
+      await axios.delete(`https://fin-track-be.vercel.app/api/categories?name=${encodeURIComponent(categoryName)}&account=${encodeURIComponent(form.account)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       await fetchCategories();
@@ -111,7 +111,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
         date: dateObj.toISOString(),
       };
 
-      await axios.post("http://localhost:5000/api/transactions", formData, {
+      await axios.post("https://fin-track-be.vercel.app/api/transactions", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -128,24 +128,21 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
     }
   };
 
-  const inputBase = `w-full px-3 py-2 rounded border ${
-    isDark
+  const inputBase = `w-full px-3 py-2 rounded border ${isDark
       ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400"
       : "bg-white border-gray-300 text-black"
-  }`;
+    }`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div
-        className={`rounded-lg shadow-xl w-full max-w-md p-6 relative ${
-          isDark ? "bg-gray-900 text-white" : "bg-white text-black"
-        }`}
+        className={`rounded-lg shadow-xl w-full max-w-md p-6 relative ${isDark ? "bg-gray-900 text-white" : "bg-white text-black"
+          }`}
       >
         <button
           onClick={onClose}
-          className={`absolute top-2 right-3 text-lg ${
-            isDark ? "text-gray-400 hover:text-red-400" : "text-gray-500 hover:text-red-500"
-          }`}
+          className={`absolute top-2 right-3 text-lg ${isDark ? "text-gray-400 hover:text-red-400" : "text-gray-500 hover:text-red-500"
+            }`}
         >
           &times;
         </button>
@@ -208,11 +205,10 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
             <div className="flex items-center gap-2 mb-1">
               <select
                 name="category"
-                className={`${inputBase} ${
-                  form.type === "income"
+                className={`${inputBase} ${form.type === "income"
                     ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                     : ""
-                }`}
+                  }`}
                 value={form.category}
                 onChange={handleChange}
                 disabled={form.type === "income"}

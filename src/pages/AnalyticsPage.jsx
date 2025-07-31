@@ -192,29 +192,29 @@ const AnalyticsPage = ({ setCurrentPage }) => {
           setLoading(false); // Don't set loading to false here as fetchGraphsData handles its own loading
           return; // Return early to prevent setting loading to false twice
         case 'budget':
-          const budgetRes = await axios.get(`http://localhost:5000/api/analytics/budget-vs-actual?${getBudgetFilterParamsNew()}`, {
+          const budgetRes = await axios.get(`https://fin-track-be.vercel.app/api/analytics/budget-vs-actual?${getBudgetFilterParamsNew()}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           setBudgetData(budgetRes.data);
           break;
         case 'savings':
           const [monthlySavingsRes, savingsGoalRes, budgetVsActualRes] = await Promise.all([
-            axios.get('http://localhost:5000/api/savings/monthly', {
+            axios.get('https://fin-track-be.vercel.app/api/savings/monthly', {
               headers: { Authorization: `Bearer ${token}` }
             }),
-            axios.get('http://localhost:5000/api/savings/goal', {
+            axios.get('https://fin-track-be.vercel.app/api/savings/goal', {
               headers: { Authorization: `Bearer ${token}` }
             }),
-            axios.get('http://localhost:5000/api/analytics/budget-vs-actual?period=current', {
+            axios.get('https://fin-track-be.vercel.app/api/analytics/budget-vs-actual?period=current', {
               headers: { Authorization: `Bearer ${token}` }
             })
           ]);
-          
+
           // Calculate total and average savings
           const monthlySavings = monthlySavingsRes.data;
           const totalSavings = monthlySavings.reduce((sum, item) => sum + item.savedAmount, 0);
           const averageSavings = monthlySavings.length > 0 ? totalSavings / monthlySavings.length : 0;
-          
+
           setSavingsData({
             totalSavings,
             averageSavings,
@@ -224,11 +224,11 @@ const AnalyticsPage = ({ setCurrentPage }) => {
             monthlySavings,
             savingsGoal: savingsGoalRes.data
           });
-          
+
           setSavingsBudgetData(budgetVsActualRes.data);
           break;
         case 'alerts':
-          const alertsRes = await axios.get('http://localhost:5000/api/analytics/alerts', {
+          const alertsRes = await axios.get('https://fin-track-be.vercel.app/api/analytics/alerts', {
             headers: { Authorization: `Bearer ${token}` }
           });
           setAlertsData(alertsRes.data);
@@ -246,16 +246,16 @@ const AnalyticsPage = ({ setCurrentPage }) => {
     try {
       // Fetch multiple data sources for graphs based on interval
       const [trendsRes, budgetRes, expensesRes, summaryRes] = await Promise.all([
-        axios.get(`http://localhost:5000/api/analytics/trends?period=${getTrendsPeriod()}`, {
+        axios.get(`https://fin-track-be.vercel.app/api/analytics/trends?period=${getTrendsPeriod()}`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:5000/api/analytics/budget-vs-actual', {
+        axios.get('https://fin-track-be.vercel.app/api/analytics/budget-vs-actual', {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`http://localhost:5000/api/transactions/expenses/by-category?interval=${interval}`, {
+        axios.get(`https://fin-track-be.vercel.app/api/transactions/expenses/by-category?interval=${interval}`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`http://localhost:5000/api/transactions/summary?interval=${interval}`, {
+        axios.get(`https://fin-track-be.vercel.app/api/transactions/summary?interval=${interval}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -429,36 +429,35 @@ const AnalyticsPage = ({ setCurrentPage }) => {
 
     return (
       <div className="space-y-6 ">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex flex-col gap-2">
-                {/* <label className="text-sm font-medium text-muted-foreground">Time Period</label> */}
-                <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-                  {intervals.map((int) => {
-                    const Icon = int.icon;
-                    return (
-                      <button
-                        key={int.value}
-                        onClick={() => setInterval(int.value)}
-                        disabled={graphsLoading}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                          interval === int.value
-                            ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                        } ${graphsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        title={int.label}
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span>{int.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            {/* <label className="text-sm font-medium text-muted-foreground">Time Period</label> */}
+            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+              {intervals.map((int) => {
+                const Icon = int.icon;
+                return (
+                  <button
+                    key={int.value}
+                    onClick={() => setInterval(int.value)}
+                    disabled={graphsLoading}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${interval === int.value
+                        ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      } ${graphsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    title={int.label}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{int.label}</span>
+                  </button>
+                );
+              })}
             </div>
-           
-         
-          
-      
+          </div>
+        </div>
+
+
+
+
 
         {/* Loading Indicator */}
         {loading && (
@@ -481,7 +480,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
               </div>
             </div>
           )}
-          
+
           {/* Income vs Expense Chart - Always Visible */}
           <Card className="transition-all duration-300 ease-in-out" key={`income-expense-${interval}`}>
             <CardHeader>
@@ -491,8 +490,8 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                 <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">Essential</Badge>
               </CardTitle>
               <CardDescription>
-                Your main financial overview - compare income and expenses over time. 
-              
+                Your main financial overview - compare income and expenses over time.
+
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -506,18 +505,18 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsBarChart data={summary?.data || []}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="label" 
+                    <XAxis
+                      dataKey="label"
                       tick={{ fontSize: 12 }}
                       angle={-45}
                       textAnchor="end"
                       height={80}
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fontSize: 12 }}
                       tickFormatter={(value) => `Rs. ${(value / 1000).toFixed(0)}k`}
                     />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value, name) => [
                         `Rs. ${value.toLocaleString()}`,
                         name === 'income' ? 'Income' : 'Expense'
@@ -546,7 +545,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                       {(summary?.data || []).map((entry, index) => {
                         const isCurrentPeriod = entry.label === getCurrentPeriodLabel(summary);
                         return (
-                          <Cell 
+                          <Cell
                             key={`income-cell-${index}`}
                             fill={isCurrentPeriod ? '#16a34a' : '#22c55e'}
                             stroke={isCurrentPeriod ? '#15803d' : '#22c55e'}
@@ -559,7 +558,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                       {(summary?.data || []).map((entry, index) => {
                         const isCurrentPeriod = entry.label === getCurrentPeriodLabel(summary);
                         return (
-                          <Cell 
+                          <Cell
                             key={`expense-cell-${index}`}
                             fill={isCurrentPeriod ? '#dc2626' : '#ef4444'}
                             stroke={isCurrentPeriod ? '#b91c1c' : '#ef4444'}
@@ -590,49 +589,49 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                 </div>
               </div>
             )}
-            
+
             <>
               {/* Spending Trends Line Chart */}
-             
+
               {/* Expense Distribution Pie Chart */}
               <Card className="transition-all duration-300 ease-in-out" key={`expense-distribution-${interval}`}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                      <PieChart className="h-5 w-5" />
+                    <PieChart className="h-5 w-5" />
                     Expense Distribution - {getIntervalLabel()}
-                      <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 text-xs">Advanced</Badge>
+                    <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 text-xs">Advanced</Badge>
                   </CardTitle>
                   <CardDescription>Breakdown of your expenses by category</CardDescription>
                 </CardHeader>
-                  <CardContent>
+                <CardContent>
                   <div className="h-80 transition-all duration-500 ease-in-out">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <RechartsPieChart>
-                          <Pie
-                            data={expenseChartData}
-                            cx="50%"
-                            cy="50%"
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsPieChart>
+                        <Pie
+                          data={expenseChartData}
+                          cx="50%"
+                          cy="50%"
                           labelLine={false}
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                           outerRadius={120}
                           fill="#8884d8"
                           dataKey="value"
-                          >
-                            {expenseChartData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <Tooltip 
+                        >
+                          {expenseChartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
                           formatter={(value) => [`Rs. ${value.toLocaleString()}`, 'Amount']}
-                            labelStyle={{ fontWeight: 'bold' }}
-                          />
-                        </RechartsPieChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </CardContent>
+                          labelStyle={{ fontWeight: 'bold' }}
+                        />
+                      </RechartsPieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
               </Card>
             </>
-        </div>
+          </div>
         </div>
       </div>
     );
@@ -640,7 +639,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
 
   const renderOverviewTab = () => {
     const { summary } = graphsData || {};
-    
+
     return (
       <div className="space-y-6">
         {/* Key Metrics Cards */}
@@ -697,7 +696,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold transition-all duration-300 ease-in-out">
-                {summary?.totals?.income > 0 
+                {summary?.totals?.income > 0
                   ? `${(((summary.totals.income - summary.totals.expense) / summary.totals.income) * 100).toFixed(1)}%`
                   : 'N/A'
                 }
@@ -723,18 +722,18 @@ const AnalyticsPage = ({ setCurrentPage }) => {
               <ResponsiveContainer width="100%" height="100%">
                 <RechartsBarChart data={summary?.data || []}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="label" 
+                  <XAxis
+                    dataKey="label"
                     tick={{ fontSize: 12 }}
                     angle={-45}
                     textAnchor="end"
                     height={80}
                   />
-                  <YAxis 
+                  <YAxis
                     tick={{ fontSize: 12 }}
                     tickFormatter={(value) => `Rs. ${(value / 1000).toFixed(0)}k`}
                   />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value, name) => [
                       `Rs. ${value.toLocaleString()}`,
                       name === 'income' ? 'Income' : 'Expense'
@@ -755,7 +754,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
 
   const renderTrendsTab = () => {
     const { summary } = graphsData || {};
-    
+
     // Prepare data for spending trends line chart
     const trendsChartData = trendsData?.trends?.map(trend => ({
       month: new Date(trend.month + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
@@ -778,7 +777,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
       value: Number(item.total),
       color: CHART_COLORS[index % CHART_COLORS.length]
     })) || [];
-    
+
     return (
       <div className="space-y-6">
         {/* Key Metrics Cards */}
@@ -850,9 +849,9 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                 {graphsLoading || !graphsData ? (
                   <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-8 w-24 rounded"></div>
                 ) : (
-                  summary?.totals?.income > 0 
-                  ? `${(((summary.totals.income - summary.totals.expense) / summary.totals.income) * 100).toFixed(1)}%`
-                  : 'N/A'
+                  summary?.totals?.income > 0
+                    ? `${(((summary.totals.income - summary.totals.expense) / summary.totals.income) * 100).toFixed(1)}%`
+                    : 'N/A'
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -873,11 +872,10 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                     key={int.value}
                     onClick={() => setInterval(int.value)}
                     disabled={graphsLoading}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                      interval === int.value
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${interval === int.value
                         ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                    } ${graphsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      } ${graphsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={int.label}
                   >
                     <Icon className="h-4 w-4" />
@@ -910,20 +908,20 @@ const AnalyticsPage = ({ setCurrentPage }) => {
               </div>
             </div>
           )}
-          
+
           {/* Income vs Expense Chart - Always Visible */}
           <Card className="transition-all duration-300 ease-in-out" key={`income-expense-${interval}`}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart className="h-5 w-5" />
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart className="h-5 w-5" />
                 Income vs Expense - {getIntervalLabel()}
                 <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">Essential</Badge>
-            </CardTitle>
+              </CardTitle>
               <CardDescription>
-                Your main financial overview - compare income and expenses over time. 
+                Your main financial overview - compare income and expenses over time.
               </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </CardHeader>
+            <CardContent>
               <div className="h-80 transition-all duration-500 ease-in-out">
                 {interval === 'weekly' && summary?.data && (
                   <>
@@ -934,18 +932,18 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsBarChart data={summary?.data || []}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="label" 
+                    <XAxis
+                      dataKey="label"
                       tick={{ fontSize: 12 }}
                       angle={-45}
                       textAnchor="end"
                       height={80}
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fontSize: 12 }}
                       tickFormatter={(value) => `Rs. ${(value / 1000).toFixed(0)}k`}
                     />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value, name) => [
                         `Rs. ${value.toLocaleString()}`,
                         name === 'income' ? 'Income' : 'Expense'
@@ -953,49 +951,49 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                       labelStyle={{ fontWeight: 'bold' }}
                     />
                     <Legend />
-                      {/* Highlight background for current period */}
-                      {summary?.data?.map((entry, index) => {
+                    {/* Highlight background for current period */}
+                    {summary?.data?.map((entry, index) => {
+                      const isCurrentPeriod = entry.label === getCurrentPeriodLabel(summary);
+                      if (isCurrentPeriod) {
+                        return (
+                          <ReferenceArea
+                            key={`highlight-${index}`}
+                            x1={entry.label}
+                            x2={entry.label}
+                            fill="#dbeafe"
+                            fillOpacity={0.6}
+                            stroke="none"
+                          />
+                        );
+                      }
+                      return null;
+                    })}
+                    <Bar dataKey="income" name="Income" fill="#22c55e" radius={[4, 4, 0, 0]}>
+                      {(summary?.data || []).map((entry, index) => {
                         const isCurrentPeriod = entry.label === getCurrentPeriodLabel(summary);
-                        if (isCurrentPeriod) {
-                          return (
-                            <ReferenceArea
-                              key={`highlight-${index}`}
-                              x1={entry.label}
-                              x2={entry.label}
-                              fill="#dbeafe"
-                              fillOpacity={0.6}
-                              stroke="none"
-                            />
-                          );
-                        }
-                        return null;
+                        return (
+                          <Cell
+                            key={`income-cell-${index}`}
+                            fill={isCurrentPeriod ? '#16a34a' : '#22c55e'}
+                            stroke={isCurrentPeriod ? '#15803d' : '#22c55e'}
+                            strokeWidth={isCurrentPeriod ? 2 : 1}
+                          />
+                        );
                       })}
-                      <Bar dataKey="income" name="Income" fill="#22c55e" radius={[4, 4, 0, 0]}>
-                        {(summary?.data || []).map((entry, index) => {
-                          const isCurrentPeriod = entry.label === getCurrentPeriodLabel(summary);
-                          return (
-                            <Cell 
-                              key={`income-cell-${index}`}
-                              fill={isCurrentPeriod ? '#16a34a' : '#22c55e'}
-                              stroke={isCurrentPeriod ? '#15803d' : '#22c55e'}
-                              strokeWidth={isCurrentPeriod ? 2 : 1}
-                            />
-                          );
-                        })}
-                      </Bar>
-                      <Bar dataKey="expense" name="Expense" fill="#ef4444" radius={[4, 4, 0, 0]}>
-                        {(summary?.data || []).map((entry, index) => {
-                          const isCurrentPeriod = entry.label === getCurrentPeriodLabel(summary);
-                          return (
-                            <Cell 
-                              key={`expense-cell-${index}`}
-                              fill={isCurrentPeriod ? '#dc2626' : '#ef4444'}
-                              stroke={isCurrentPeriod ? '#b91c1c' : '#ef4444'}
-                              strokeWidth={isCurrentPeriod ? 2 : 1}
-                            />
-                          );
-                        })}
-                      </Bar>
+                    </Bar>
+                    <Bar dataKey="expense" name="Expense" fill="#ef4444" radius={[4, 4, 0, 0]}>
+                      {(summary?.data || []).map((entry, index) => {
+                        const isCurrentPeriod = entry.label === getCurrentPeriodLabel(summary);
+                        return (
+                          <Cell
+                            key={`expense-cell-${index}`}
+                            fill={isCurrentPeriod ? '#dc2626' : '#ef4444'}
+                            stroke={isCurrentPeriod ? '#b91c1c' : '#ef4444'}
+                            strokeWidth={isCurrentPeriod ? 2 : 1}
+                          />
+                        );
+                      })}
+                    </Bar>
                   </RechartsBarChart>
                 </ResponsiveContainer>
               </div>
@@ -1005,7 +1003,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
           {/* Income vs Expense vs Savings Chart - Always Visible */}
           <div className="transition-all duration-500 ease-in-out">
             <IncomeExpenseSavingsChart />
-      </div>
+          </div>
 
           {/* Advanced Charts (Always Visible) */}
           <div className="relative">
@@ -1018,7 +1016,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                 </div>
               </div>
             )}
-            
+
             <>
 
 
@@ -1050,7 +1048,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
-                        <Tooltip 
+                        <Tooltip
                           formatter={(value) => [`Rs. ${value.toLocaleString()}`, 'Amount']}
                           labelStyle={{ fontWeight: 'bold' }}
                         />
@@ -1064,8 +1062,8 @@ const AnalyticsPage = ({ setCurrentPage }) => {
         </div>
 
         {/* Trend Analysis Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* <Card>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Overall Trend</CardTitle>
             {trendsData?.overallTrend > 0 ? (
@@ -1097,7 +1095,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
           </CardContent>
         </Card> */}
 
-        {/* <Card>
+          {/* <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Average Monthly Spending</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -1111,9 +1109,9 @@ const AnalyticsPage = ({ setCurrentPage }) => {
             </p>
           </CardContent>
         </Card> */}
+        </div>
       </div>
-    </div>
-  );
+    );
   };
 
   const handleSelectMonth = () => {
@@ -1130,10 +1128,10 @@ const AnalyticsPage = ({ setCurrentPage }) => {
   const renderBudgetTab = () => {
     // Check if there are actual budgets set for this period
     // More comprehensive validation - check if there are actual budget entries
-    const hasBudgets = budgetData?.summary?.totalBudget > 0 || 
-                      (budgetData?.comparison && budgetData.comparison.some(item => item.budget > 0));
+    const hasBudgets = budgetData?.summary?.totalBudget > 0 ||
+      (budgetData?.comparison && budgetData.comparison.some(item => item.budget > 0));
     const hasComparisonData = budgetData?.comparison?.length > 0;
-    
+
     // Additional check: if period is 'past' and the returned data does not match the selected year/month, show empty state
     let isPastPeriodMismatch = false;
     if (budgetFilters.period === 'past' && budgetData?.summary) {
@@ -1158,7 +1156,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
             action: "Set Up Budgets",
             actionUrl: "/budget"
           };
-      
+
         case 'all':
           return {
             title: "No Budget History Available",
@@ -1549,7 +1547,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
 
     const validateFilters = () => {
       const newErrors = {};
-      
+
       if (localFilters.period === 'custom') {
         if (!localFilters.startDate) {
           newErrors.startDate = 'Start date is required';
@@ -1565,7 +1563,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
           }
         }
       }
-      
+
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
@@ -1610,7 +1608,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
           <SheetTrigger asChild>
             <Button variant="outline" className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 shadow-none hover:bg-gray-200 dark:hover:bg-gray-700">
               <Filter className="h-4 w-4" />
-              Budget Filters 
+              Budget Filters
               <Badge variant="secondary" className="ml-1 text-xs">
                 {getFilterStatus()}
               </Badge>
@@ -1626,11 +1624,11 @@ const AnalyticsPage = ({ setCurrentPage }) => {
             <div className="grid gap-4 py-4">
               <div>
                 <Label>Time Period</Label>
-                <Select 
-                  value={localFilters.period} 
+                <Select
+                  value={localFilters.period}
                   onValueChange={(value) => {
-                    setLocalFilters(prev => ({ 
-                      ...prev, 
+                    setLocalFilters(prev => ({
+                      ...prev,
                       period: value,
                       // Reset date fields when changing period
                       startDate: value !== 'custom' ? '' : prev.startDate,
@@ -1655,8 +1653,8 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                 <>
                   <div>
                     <Label>Year</Label>
-                    <Select 
-                      value={localFilters.year.toString()} 
+                    <Select
+                      value={localFilters.year.toString()}
                       onValueChange={(value) => setLocalFilters(prev => ({ ...prev, year: parseInt(value) }))}
                     >
                       <SelectTrigger>
@@ -1672,8 +1670,8 @@ const AnalyticsPage = ({ setCurrentPage }) => {
 
                   <div>
                     <Label>Month</Label>
-                    <Select 
-                      value={localFilters.month.toString()} 
+                    <Select
+                      value={localFilters.month.toString()}
                       onValueChange={(value) => setLocalFilters(prev => ({ ...prev, month: parseInt(value) }))}
                     >
                       <SelectTrigger>
@@ -1728,9 +1726,9 @@ const AnalyticsPage = ({ setCurrentPage }) => {
               {/* Info section */}
               <div className="p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  <strong>Current Period:</strong> Uses your active budgets for the current month<br/>
-                  <strong>Past Period:</strong> Uses saved budget history from previous months<br/>
-                  <strong>All Time:</strong> Aggregates all budget history data<br/>
+                  <strong>Current Period:</strong> Uses your active budgets for the current month<br />
+                  <strong>Past Period:</strong> Uses saved budget history from previous months<br />
+                  <strong>All Time:</strong> Aggregates all budget history data<br />
                   <strong>Custom Range:</strong> Select specific dates for analysis
                 </p>
               </div>
@@ -1768,7 +1766,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
     setSavingsLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/analytics/budget-vs-actual?period=past&year=${year}&month=${month}`,
+        `https://fin-track-be.vercel.app/api/analytics/budget-vs-actual?period=past&year=${year}&month=${month}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSavingsBudgetData(res.data);
@@ -1791,7 +1789,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
     setSavingsLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/analytics/budget-vs-actual?period=past&year=${year}&month=${month}`,
+        `https://fin-track-be.vercel.app/api/analytics/budget-vs-actual?period=past&year=${year}&month=${month}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setFilteredSavingsBudgetData(res.data);
@@ -1833,11 +1831,10 @@ const AnalyticsPage = ({ setCurrentPage }) => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab.id
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab.id
                   ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
+                }`}
             >
               <Icon className="h-4 w-4" />
               <span>{tab.label}</span>

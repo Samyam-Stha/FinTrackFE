@@ -28,7 +28,7 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
     fetchSummary();
 
     // Initialize Socket.IO connection
-    const socket = io("http://localhost:5000", {
+    const socket = io("https://fin-track-be.vercel.app", {
       withCredentials: true
     });
 
@@ -55,7 +55,7 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
     const token = localStorage.getItem("token");
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/transactions/summary?interval=${interval}`,
+        `https://fin-track-be.vercel.app/api/transactions/summary?interval=${interval}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

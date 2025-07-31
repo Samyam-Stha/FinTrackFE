@@ -53,7 +53,7 @@ export default function EditTransactionModal({ transaction, onClose }) {
       const token = localStorage.getItem("token");
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/categories?account=${form.account}`,
+          `https://fin-track-be.vercel.app/api/categories?account=${form.account}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -122,11 +122,10 @@ export default function EditTransactionModal({ transaction, onClose }) {
 
           <select
             name="category"
-            className={`w-full border px-3 py-2 rounded ${
-              form.type === "income"
+            className={`w-full border px-3 py-2 rounded ${form.type === "income"
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                 : ""
-            }`}
+              }`}
             value={form.category}
             onChange={handleChange}
             disabled={form.type === "income"}

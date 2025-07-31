@@ -22,7 +22,7 @@ export const AuthForm = () => {
     const { username, email, password } = e.target;
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch("https://fin-track-be.vercel.app/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -55,7 +55,7 @@ export const AuthForm = () => {
   const handleVerification = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/auth/verify", {
+      const res = await fetch("https://fin-track-be.vercel.app/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -83,7 +83,7 @@ export const AuthForm = () => {
     const { email, password } = e.target;
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("https://fin-track-be.vercel.app/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -108,7 +108,7 @@ export const AuthForm = () => {
 
   const handleResendCode = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/resend", {
+      const res = await fetch("https://fin-track-be.vercel.app/api/auth/resend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: pendingEmail }),
@@ -128,7 +128,7 @@ export const AuthForm = () => {
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/auth/request-reset", {
+      const res = await fetch("https://fin-track-be.vercel.app/api/auth/request-reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail }),
@@ -149,7 +149,7 @@ export const AuthForm = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/auth/verify-reset", {
+      const res = await fetch("https://fin-track-be.vercel.app/api/auth/verify-reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -197,7 +197,7 @@ export const AuthForm = () => {
                 title="Enter the 6-digit code"
               />
               <button className="auth-form">Verify</button>
-              <button type="button" className="auth-form" style={{marginTop: '10px'}} onClick={handleResendCode}>
+              <button type="button" className="auth-form" style={{ marginTop: '10px' }} onClick={handleResendCode}>
                 Resend Code
               </button>
             </form>
@@ -275,7 +275,7 @@ export const AuthForm = () => {
                   title="Please enter a valid email address"
                 />
                 <button className="auth-form">Send Reset Code</button>
-                <button type="button" className="auth-form" style={{marginTop: '10px'}} onClick={() => setShowForgot(false)}>
+                <button type="button" className="auth-form" style={{ marginTop: '10px' }} onClick={() => setShowForgot(false)}>
                   Back to Sign In
                 </button>
               </form>

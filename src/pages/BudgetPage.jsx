@@ -42,7 +42,7 @@ const BudgetPage = () => {
   const checkMonthlyReset = () => {
     const currentMonth = new Date().toISOString().slice(0, 7);
     const storedMonth = localStorage.getItem("lastBudgetMonth");
-    
+
     if (storedMonth && storedMonth !== currentMonth) {
       // Month has changed, show reset notification
       setShowResetNotification(true);
@@ -55,7 +55,7 @@ const BudgetPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/categories", {
+      const res = await axios.get("https://fin-track-be.vercel.app/api/categories", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -82,7 +82,7 @@ const BudgetPage = () => {
     const targetMonth = new Date().toISOString().slice(0, 7);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/budget?month=${targetMonth}`,
+        `https://fin-track-be.vercel.app/api/budget?month=${targetMonth}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -102,7 +102,7 @@ const BudgetPage = () => {
 
   const fetchForecast = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/budget/forecast", {
+      const res = await axios.get("https://fin-track-be.vercel.app/api/budget/forecast", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setForecast(res.data);
@@ -118,7 +118,7 @@ const BudgetPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/budget", form, {
+      await axios.post("https://fin-track-be.vercel.app/api/budget", form, {
         headers: { Authorization: `Bearer ${token}` },
       });
       await fetchBudgets();
@@ -141,14 +141,14 @@ const BudgetPage = () => {
     setAutoBudgetLoading(true);
     try {
       console.log("Starting auto budget generation...");
-      
+
       // Fetch categories
-      const catRes = await axios.get("http://localhost:5000/api/categories", {
+      const catRes = await axios.get("https://fin-track-be.vercel.app/api/categories", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const userCategories = catRes.data || [];
       console.log("User categories:", userCategories);
-      
+
       const fallbackDefaults = [
         "Food & Dining",
         "Transportation",
@@ -166,21 +166,21 @@ const BudgetPage = () => {
       const [year, monthNum] = autoBudgetMonth.split("-");
       const monthStart = `${autoBudgetMonth}-01`;
       console.log("Selected month:", autoBudgetMonth, "Year:", year, "Month:", monthNum);
-      
+
       const incomeRes = await axios.get(
-        `http://localhost:5000/api/transactions/summary?interval=monthly`,
+        `https://fin-track-be.vercel.app/api/transactions/summary?interval=monthly`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log("Income response:", incomeRes.data);
-      
+
       // Find the correct month label
       const monthDate = new Date(parseInt(year), parseInt(monthNum) - 1, 1);
       const monthName = monthDate.toLocaleString('default', { month: 'long' });
       console.log("Looking for month:", monthName, "Year:", year);
-      
+
       const monthData = incomeRes.data.data.find(d => d.label === monthName && d.year == year);
       console.log("Found month data:", monthData);
-      
+
       const totalIncome = monthData ? Number(monthData.income) : 0;
       console.log("Total income for month:", totalIncome);
 
@@ -195,7 +195,7 @@ const BudgetPage = () => {
 
       // Check if budgets already exist for this month
       const budgetRes = await axios.get(
-        `http://localhost:5000/api/budget?month=${autoBudgetMonth}`,
+        `https://fin-track-be.vercel.app/api/budget?month=${autoBudgetMonth}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setAutoBudgetExists((budgetRes.data || []).some(b => b.budget > 0));
@@ -222,7 +222,7 @@ const BudgetPage = () => {
       await Promise.all(
         autoBudgets.map(b =>
           axios.post(
-            "http://localhost:5000/api/budget",
+            "https://fin-track-be.vercel.app/api/budget",
             { categoryName: b.category, budget: b.budget, month: autoBudgetMonth },
             { headers: { Authorization: `Bearer ${token}` } }
           )
@@ -244,7 +244,7 @@ const BudgetPage = () => {
   const handleEditBudget = async (categoryId, newBudget) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/budget/${categoryId}`,
+        `https://fin-track-be.vercel.app/api/budget/${categoryId}`,
         { budget: newBudget },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -260,7 +260,7 @@ const BudgetPage = () => {
   const handleDeleteBudget = async (budgetId) => {
     if (!window.confirm('Are you sure you want to delete this budget?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/budget/${budgetId}`, {
+      await axios.delete(`https://fin-track-be.vercel.app/api/budget/${budgetId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       await fetchBudgets();
@@ -274,7 +274,7 @@ const BudgetPage = () => {
   const handleManualReset = async () => {
     if (window.confirm("This will reset all budgets to 0 and save current month's data to history. Continue?")) {
       try {
-        await axios.post("http://localhost:5000/api/budget/reset", { month: new Date().toISOString().slice(0, 7) }, {
+        await axios.post("https://fin-track-be.vercel.app/api/budget/reset", { month: new Date().toISOString().slice(0, 7) }, {
           headers: { Authorization: `Bearer ${token}` },
         });
         await fetchBudgets();

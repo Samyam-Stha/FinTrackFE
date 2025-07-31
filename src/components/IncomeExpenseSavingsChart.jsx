@@ -32,7 +32,7 @@ const IncomeExpenseSavingsChart = () => {
   const fetchMonthlyData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/transactions/summary?interval=monthly', {
+      const response = await axios.get('https://fin-track-be.vercel.app/api/transactions/summary?interval=monthly', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMonthlyData(response.data.data || []);
@@ -104,36 +104,36 @@ const IncomeExpenseSavingsChart = () => {
           <ResponsiveContainer width="100%" height="100%">
             <RechartsBarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="period" 
+              <XAxis
+                dataKey="period"
                 tick={{ fontSize: 12 }}
                 angle={-45}
                 textAnchor="end"
                 height={80}
               />
-              <YAxis 
+              <YAxis
                 tickFormatter={(value) => formatNPR(value)}
                 tick={{ fontSize: 12 }}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value, name) => [formatNPR(value), name]}
                 labelFormatter={(label) => `Period: ${label}`}
               />
               <Legend />
-              <Bar 
-                dataKey="income" 
-                fill="#10b981" 
+              <Bar
+                dataKey="income"
+                fill="#10b981"
                 name="Income"
                 radius={[4, 4, 0, 0]}
               />
-              <Bar 
-                dataKey="expenses" 
-                fill="#ef4444" 
+              <Bar
+                dataKey="expenses"
+                fill="#ef4444"
                 name="Expenses"
                 radius={[4, 4, 0, 0]}
               />
-              <Bar 
-                dataKey="savings" 
+              <Bar
+                dataKey="savings"
                 fill={(entry) => getSavingsColor(entry.savings)}
                 name="Savings"
                 radius={[4, 4, 0, 0]}
@@ -156,13 +156,13 @@ const IncomeExpenseSavingsChart = () => {
                   ⚠️ Your expenses exceed your income by {formatNPR(Math.abs(totals.savings))}
                 </p>
               )}
-              
+
               {totals.expenses > 0 && (
                 <p className="text-gray-600">
                   💡 Your expense-to-income ratio is {((totals.expenses / totals.income) * 100).toFixed(1)}%
                 </p>
               )}
-              
+
               {chartData.some(item => item.savings < 0) && (
                 <p className="text-orange-600">
                   📊 Some periods show negative savings - consider reviewing your spending patterns

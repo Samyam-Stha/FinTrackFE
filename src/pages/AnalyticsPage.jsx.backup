@@ -172,13 +172,13 @@ const AnalyticsPage = ({ setCurrentPage }) => {
         case 'overview':
           // Fetch data for overview - key metrics and main chart
           const [overviewTrendsRes, overviewBudgetRes, overviewSummaryRes] = await Promise.all([
-            axios.get(`http://localhost:5000/api/analytics/trends?period=${getTrendsPeriod()}`, {
+            axios.get(`https://fin-track-be.vercel.app/api/analytics/trends?period=${getTrendsPeriod()}`, {
               headers: { Authorization: `Bearer ${token}` }
             }),
-            axios.get(`http://localhost:5000/api/analytics/budget-vs-actual?${getBudgetFilterParams()}`, {
+            axios.get(`https://fin-track-be.vercel.app/api/analytics/budget-vs-actual?${getBudgetFilterParams()}`, {
               headers: { Authorization: `Bearer ${token}` }
             }),
-            axios.get(`http://localhost:5000/api/transactions/summary?interval=${interval}`, {
+            axios.get(`https://fin-track-be.vercel.app/api/transactions/summary?interval=${interval}`, {
               headers: { Authorization: `Bearer ${token}` }
             })
           ]);
@@ -191,17 +191,17 @@ const AnalyticsPage = ({ setCurrentPage }) => {
           setLoading(false); // Don't set loading to false here as fetchGraphsData handles its own loading
           return; // Return early to prevent setting loading to false twice
         case 'budget':
-          const budgetRes = await axios.get(`http://localhost:5000/api/analytics/budget-vs-actual?${getBudgetFilterParamsNew()}`, {
+          const budgetRes = await axios.get(`https://fin-track-be.vercel.app/api/analytics/budget-vs-actual?${getBudgetFilterParamsNew()}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           setBudgetData(budgetRes.data);
           break;
         case 'savings':
           const [monthlySavingsRes, savingsGoalRes] = await Promise.all([
-            axios.get('http://localhost:5000/api/savings/monthly', {
+            axios.get('https://fin-track-be.vercel.app/api/savings/monthly', {
               headers: { Authorization: `Bearer ${token}` }
             }),
-            axios.get('http://localhost:5000/api/savings/goal', {
+            axios.get('https://fin-track-be.vercel.app/api/savings/goal', {
               headers: { Authorization: `Bearer ${token}` }
             })
           ]);
@@ -222,7 +222,7 @@ const AnalyticsPage = ({ setCurrentPage }) => {
           });
           break;
         case 'alerts':
-          const alertsRes = await axios.get('http://localhost:5000/api/analytics/alerts', {
+          const alertsRes = await axios.get('https://fin-track-be.vercel.app/api/analytics/alerts', {
             headers: { Authorization: `Bearer ${token}` }
           });
           setAlertsData(alertsRes.data);
@@ -240,16 +240,16 @@ const AnalyticsPage = ({ setCurrentPage }) => {
     try {
       // Fetch multiple data sources for graphs based on interval
       const [trendsRes, budgetRes, expensesRes, summaryRes] = await Promise.all([
-        axios.get(`http://localhost:5000/api/analytics/trends?period=${getTrendsPeriod()}`, {
+        axios.get(`https://fin-track-be.vercel.app/api/analytics/trends?period=${getTrendsPeriod()}`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:5000/api/analytics/budget-vs-actual', {
+        axios.get('https://fin-track-be.vercel.app/api/analytics/budget-vs-actual', {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`http://localhost:5000/api/transactions/expenses/by-category?interval=${interval}`, {
+        axios.get(`https://fin-track-be.vercel.app/api/transactions/expenses/by-category?interval=${interval}`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`http://localhost:5000/api/transactions/summary?interval=${interval}`, {
+        axios.get(`https://fin-track-be.vercel.app/api/transactions/summary?interval=${interval}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);

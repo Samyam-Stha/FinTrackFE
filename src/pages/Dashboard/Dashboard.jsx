@@ -39,7 +39,7 @@ const Dashboard = () => {
     fetchTransactions();
 
     // Initialize Socket.IO connection
-    const socket = io("http://localhost:5000", {
+    const socket = io("https://fin-track-be.vercel.app", {
       withCredentials: true
     });
 
@@ -53,10 +53,10 @@ const Dashboard = () => {
 
     socket.on("transaction:updated", ({ userId, transaction }) => {
       if (userId === user?.id) {
-        setTransactions(prev => 
+        setTransactions(prev =>
           prev.map(t => t.id === transaction.id ? transaction : t)
         );
-        updateDashboardStats(transactions.map(t => 
+        updateDashboardStats(transactions.map(t =>
           t.id === transaction.id ? transaction : t
         ));
       }
@@ -93,8 +93,8 @@ const Dashboard = () => {
     // Filter transactions for current month
     const currentMonthTransactions = txs.filter(t => {
       const transactionDate = new Date(t.date);
-      return transactionDate.getMonth() === currentMonth && 
-             transactionDate.getFullYear() === currentYear;
+      return transactionDate.getMonth() === currentMonth &&
+        transactionDate.getFullYear() === currentYear;
     });
 
     const monthlyIncome = currentMonthTransactions
@@ -120,7 +120,7 @@ const Dashboard = () => {
   const fetchTransactions = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get("http://localhost:5000/api/transactions", {
+      const res = await axios.get("https://fin-track-be.vercel.app/api/transactions", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const txs = res.data;
@@ -259,7 +259,7 @@ const Dashboard = () => {
           <CardDescription>Income vs Expense (Monthly)</CardDescription>
         </CardHeader>
         <CardContent>
-        <Overview isDark={document.documentElement.classList.contains("dark")} interval="monthly" chartType="Bar Chart" />
+          <Overview isDark={document.documentElement.classList.contains("dark")} interval="monthly" chartType="Bar Chart" />
         </CardContent>
       </Card>
 

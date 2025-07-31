@@ -19,7 +19,7 @@ const SetSavingsGoalModal = ({ isOpen, onClose, onGoalSet, currentGoal = 0 }) =>
         setError('');
 
         try {
-            const response = await axios.post("http://localhost:5000/api/savings/goal", {
+            const response = await axios.post("https://fin-track-be.vercel.app/api/savings/goal", {
                 initialGoal: parseFloat(goal)
             }, {
                 headers: { Authorization: `Bearer ${token}` }

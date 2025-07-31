@@ -20,7 +20,7 @@ export function RecentTransactions() {
     const fetchTransactions = async () => {
       const token = localStorage.getItem("token");
       try {
-        const res = await axios.get("http://localhost:5000/api/transactions", {
+        const res = await axios.get("https://fin-track-be.vercel.app/api/transactions", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -49,7 +49,7 @@ export function RecentTransactions() {
     fetchTransactions();
 
     // Initialize Socket.IO connection
-    const socket = io("http://localhost:5000", {
+    const socket = io("https://fin-track-be.vercel.app", {
       withCredentials: true
     });
 
@@ -115,13 +115,12 @@ export function RecentTransactions() {
               <TableCell>{transaction.description}</TableCell>
               <TableCell>{transaction.category}</TableCell>
               <TableCell
-                className={`text-right ${
-                  transaction.type === "expense"
+                className={`text-right ${transaction.type === "expense"
                     ? "text-red-500"
                     : transaction.type === "income"
-                    ? "text-green-500"
-                    : ""
-                }`}
+                      ? "text-green-500"
+                      : ""
+                  }`}
               >
                 Rs. {Number(transaction.amount).toFixed(2)}
               </TableCell>

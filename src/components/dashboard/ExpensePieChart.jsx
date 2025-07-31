@@ -48,7 +48,7 @@ export default function ExpensePieChart({ isDark, interval }) {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/transactions/expenses/by-category?interval=${interval}`,
+        `https://fin-track-be.vercel.app/api/transactions/expenses/by-category?interval=${interval}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -69,7 +69,7 @@ export default function ExpensePieChart({ isDark, interval }) {
     fetchExpenses();
 
     // Initialize Socket.IO connection
-    const socket = io("http://localhost:5000", {
+    const socket = io("https://fin-track-be.vercel.app", {
       withCredentials: true
     });
 
