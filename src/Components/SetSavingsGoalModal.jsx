@@ -54,7 +54,7 @@ const SetSavingsGoalModal = ({ isOpen, onClose, onGoalSet, currentGoal = 0 }) =>
                                 <Input
                                     id="goal"
                                     type="number"
-                                    step="0.01"
+                                    step="100"
                                     min="0"
                                     value={goal}
                                     onChange={(e) => setGoal(e.target.value)}

@@ -20,6 +20,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
   const [newCategory, setNewCategory] = useState("");
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dateError, setDateError] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -106,8 +107,19 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setDateError("");
+
     try {
       const dateObj = new Date(form.date);
+      const now = new Date();
+
+      // Check if the selected date is in the future
+      if (dateObj > now) {
+        setDateError("Cannot add transactions with future dates. Please select today's date or a past date.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const formData = {
         ...form,
         date: dateObj.toISOString(),
@@ -150,14 +162,20 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
         </button>
         <h2 className="text-2xl font-bold mb-4 text-center">Add Transaction</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="datetime-local"
-            name="date"
-            className={inputBase}
-            value={form.date}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <input
+              type="datetime-local"
+              name="date"
+              className={inputBase}
+              value={form.date}
+              onChange={handleChange}
+              max={format(new Date(), "yyyy-MM-dd'T'HH:mm")}
+              required
+            />
+            {dateError && (
+              <p className="text-red-500 text-sm mt-1">{dateError}</p>
+            )}
+          </div>
           <input
             type="text"
             name="description"
