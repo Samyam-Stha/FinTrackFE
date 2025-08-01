@@ -23,6 +23,15 @@ export const AuthForm = () => {
   const [resetLoading, setResetLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Clear any existing auth data when the auth form loads
+  React.useEffect(() => {
+    // Clear any existing tokens to prevent auto-login after logout
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.clear();
+    localStorage.removeItem("dashboardCache");
+  }, []);
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     setSignUpLoading(true);

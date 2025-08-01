@@ -13,7 +13,7 @@ export default function SettingsPage() {
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
- 
+
 
   const token = localStorage.getItem("token");
 
@@ -43,7 +43,7 @@ export default function SettingsPage() {
 
       // Clear all local storage data
       localStorage.clear();
-      
+
       // Clear any session storage data
       sessionStorage.clear();
 
@@ -75,7 +75,7 @@ export default function SettingsPage() {
     <div className="max-w-2xl mx-auto space-y-8 p-4">
       <h1 className="text-3xl font-bold text-center mb-6">⚙️ Account Settings</h1>
 
-      
+
 
       {/* Username Card */}
       <Card>
@@ -94,7 +94,7 @@ export default function SettingsPage() {
           />
           <button
             onClick={() => updateField("username")}
-            className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition cursor-pointer"
           >
             Update Username
           </button>
@@ -118,7 +118,7 @@ export default function SettingsPage() {
           />
           <button
             onClick={() => updateField("email")}
-            className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition cursor-pointer"
           >
             Update Email
           </button>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
           />
           <button
             onClick={() => updateField("newPassword")}
-            className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition cursor-pointer"
           >
             Change Password
           </button>
@@ -168,7 +168,7 @@ export default function SettingsPage() {
         <CardContent className="space-y-2">
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="bg-red-600 text-white px-4 py-2 rounded w-full hover:bg-red-700 transition"
+            className="bg-red-600 text-white px-4 py-2 rounded w-full hover:bg-red-700 transition cursor-pointer"
           >
             Delete Account
           </button>

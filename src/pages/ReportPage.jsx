@@ -22,11 +22,11 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { 
-  DollarSign, 
-  TrendingUp, 
-  CreditCard, 
-  ArrowUpRight, 
+import {
+  DollarSign,
+  TrendingUp,
+  CreditCard,
+  ArrowUpRight,
   ArrowDownRight,
   Calendar,
   BarChart3,
@@ -153,7 +153,7 @@ export default function ReportPage() {
             {getIntervalLabel()} • {chartType}
           </p>
         </div>
-        
+
         {/* Enhanced Toggle Controls */}
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Interval Toggle */}
@@ -167,11 +167,10 @@ export default function ReportPage() {
                     key={int.value}
                     onClick={() => setInterval(int.value)}
                     disabled={loading}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                      interval === int.value
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer ${interval === int.value
                         ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                    } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={int.label}
                   >
                     <Icon className="h-4 w-4" />
@@ -193,11 +192,10 @@ export default function ReportPage() {
                     key={chart.value}
                     onClick={() => setChartType(chart.value)}
                     disabled={loading}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                      chartType === chart.value
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer ${chartType === chart.value
                         ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                    } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={chart.label}
                   >
                     <Icon className="h-4 w-4" />
@@ -222,31 +220,31 @@ export default function ReportPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <SummaryCard 
-          title="Total Income" 
+        <SummaryCard
+          title="Total Income"
           value={formatNPR(summary.totalIncome)}
           color="green"
           change={summary.incomeChange}
           interval={interval}
           loading={loading}
         />
-        <SummaryCard 
-          title="Total Expense" 
+        <SummaryCard
+          title="Total Expense"
           value={formatNPR(summary.totalExpense)}
           color="red"
           change={summary.expenseChange}
           interval={interval}
           loading={loading}
         />
-        <SummaryCard 
-          title="Net Balance" 
+        <SummaryCard
+          title="Net Balance"
           value={formatNPR(summary.netBalance)}
           color="blue"
           interval={interval}
           loading={loading}
         />
-        <SummaryCard 
-          title="Savings Rate" 
+        <SummaryCard
+          title="Savings Rate"
           value={`${summary.savingsRate.toFixed(1)}%`}
           color={summary.savingsRate >= 20 ? "green" : "red"}
           interval={interval}
@@ -291,7 +289,7 @@ function SummaryCard({ title, value, color, change, interval, loading }) {
     red: <CreditCard className="h-5 w-5 text-red-500" />,
     blue: <DollarSign className="h-5 w-5 text-blue-500" />,
   };
-  
+
   const valueColor = {
     green: "text-green-600",
     red: "text-red-600",

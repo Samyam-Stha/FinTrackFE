@@ -155,7 +155,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
       >
         <button
           onClick={onClose}
-          className={`absolute top-2 right-3 text-lg ${isDark ? "text-gray-400 hover:text-red-400" : "text-gray-500 hover:text-red-500"
+          className={`absolute top-2 right-3 text-lg cursor-pointer ${isDark ? "text-gray-400 hover:text-red-400" : "text-gray-500 hover:text-red-500"
             }`}
         >
           &times;
@@ -243,7 +243,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
               {form.category && categories.includes(form.category) && (
                 <button
                   type="button"
-                  className="ml-2 text-red-500 hover:text-red-700 text-sm border border-red-200 rounded px-2 py-1"
+                  className="ml-2 text-red-500 hover:text-red-700 text-sm border border-red-200 rounded px-2 py-1 cursor-pointer"
                   onClick={() => handleDeleteCategory(form.category)}
                   title={`Delete category '${form.category}'`}
                 >
@@ -265,7 +265,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
                   <button
                     type="button"
                     onClick={addNewCategory}
-                    className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700"
+                    className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 cursor-pointer"
                   >
                     Add
                   </button>
@@ -274,7 +274,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
                 <button
                   type="button"
                   onClick={() => setShowNewCategoryInput(true)}
-                  className="text-blue-600 text-sm hover:underline"
+                  className="text-blue-600 text-sm hover:underline cursor-pointer"
                 >
                   + Create new category
                 </button>
@@ -284,7 +284,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full font-medium py-2 rounded transition-all duration-200 ${isSubmitting
+            className={`w-full font-medium py-2 rounded transition-all duration-200 cursor-pointer ${isSubmitting
               ? 'bg-gray-400 cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700'
               } text-white flex items-center justify-center gap-2`}

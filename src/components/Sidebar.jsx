@@ -40,8 +40,16 @@ export function Sidebar({ currentPage, setCurrentPage }) {
   ];
 
   const handleLogout = () => {
+    // Clear all authentication data
     localStorage.removeItem("token");
-    window.location.href = "/";
+    localStorage.removeItem("user");
+    sessionStorage.clear();
+    
+    // Clear any cached data
+    localStorage.removeItem("dashboardCache");
+    
+    // Force a hard redirect to clear any cached state
+    window.location.replace("/");
   };
 
    const [darkMode, setDarkMode] = useState(() => {

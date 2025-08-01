@@ -217,14 +217,14 @@ const Dashboard = () => {
           <button
             onClick={refreshData}
             disabled={isLoading}
-            className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer"
           >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-1 bg-black text-white px-4 py-2 rounded hover:bg-gray-700 transition"
+            className="flex items-center gap-1 bg-black text-white px-4 py-2 rounded hover:bg-gray-700 transition cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             Add Transaction

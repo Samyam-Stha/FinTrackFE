@@ -24,8 +24,16 @@ export default function App() {
   }, []);
 
   const handleLogout = () => {
+    // Clear all authentication data
     localStorage.removeItem("token");
-    navigate("/");
+    localStorage.removeItem("user");
+    sessionStorage.clear();
+
+    // Clear any cached data
+    localStorage.removeItem("dashboardCache");
+
+    // Force a hard redirect to clear any cached state
+    window.location.replace("/");
   };
 
   const renderPage = () => {

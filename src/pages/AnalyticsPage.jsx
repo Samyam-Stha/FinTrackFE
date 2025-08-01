@@ -440,9 +440,9 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                     key={int.value}
                     onClick={() => setInterval(int.value)}
                     disabled={graphsLoading}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${interval === int.value
-                        ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer ${interval === int.value
+                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       } ${graphsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={int.label}
                   >
@@ -873,8 +873,8 @@ const AnalyticsPage = ({ setCurrentPage }) => {
                     onClick={() => setInterval(int.value)}
                     disabled={graphsLoading}
                     className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${interval === int.value
-                        ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       } ${graphsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={int.label}
                   >
@@ -1832,8 +1832,8 @@ const AnalyticsPage = ({ setCurrentPage }) => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab.id
-                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
             >
               <Icon className="h-4 w-4" />

@@ -344,7 +344,7 @@ const BudgetPage = () => {
               </div>
               <button
                 onClick={() => setShowResetNotification(false)}
-                className="text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+                className="text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors cursor-pointer"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -361,7 +361,7 @@ const BudgetPage = () => {
             <button
               onClick={handleManualReset}
               disabled={resetLoading}
-              className="bg-red-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 flex items-center gap-2 disabled:opacity-60"
+              className="bg-red-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 flex items-center gap-2 disabled:opacity-60 cursor-pointer"
             >
               {resetLoading ? (
                 <>
@@ -375,7 +375,7 @@ const BudgetPage = () => {
             {/* Auto Budget Button */}
             <button
               onClick={handleAutoBudget}
-              className="bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center gap-2"
+              className="bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center gap-2 cursor-pointer"
               disabled={autoBudgetLoading}
             >
               {autoBudgetLoading ? (
@@ -422,7 +422,7 @@ const BudgetPage = () => {
                         <button
                           onClick={() => setEditingBudget(item.id)}
                           disabled={isEditLoading || isDeleteLoading}
-                          className="text-gray-500 hover:text-blue-600 transition-colors disabled:opacity-50"
+                          className="text-gray-500 hover:text-blue-600 transition-colors disabled:opacity-50 cursor-pointer"
                         >
                           {isEditLoading ? (
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
@@ -435,7 +435,7 @@ const BudgetPage = () => {
                         <button
                           onClick={() => handleDeleteBudget(item.id)}
                           disabled={isEditLoading || isDeleteLoading}
-                          className="text-gray-500 hover:text-red-600 transition-colors ml-2 disabled:opacity-50"
+                          className="text-gray-500 hover:text-red-600 transition-colors ml-2 disabled:opacity-50 cursor-pointer"
                         >
                           {isDeleteLoading ? (
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
