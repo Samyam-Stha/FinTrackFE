@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import PastBudgetHistory from '../components/PastBudgetHistory';
 
 const BudgetPage = () => {
@@ -23,14 +23,15 @@ const BudgetPage = () => {
   });
   const [autoBudgetExists, setAutoBudgetExists] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(null);
 
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetchBudgets();
-    fetchCategories();
-    fetchForecast();
-    checkMonthlyReset();
+    fetchInitialData();
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
       window.history.go(1);
@@ -39,6 +40,22 @@ const BudgetPage = () => {
       window.onpopstate = null;
     };
   }, []);
+
+  const fetchInitialData = async () => {
+    setIsLoading(true);
+    try {
+      await Promise.all([
+        fetchBudgets(),
+        fetchCategories(),
+        fetchForecast(),
+        checkMonthlyReset()
+      ]);
+    } catch (error) {
+      console.error("Error fetching initial data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const checkMonthlyReset = () => {
     const currentMonth = new Date().toISOString().slice(0, 7);
@@ -56,9 +73,7 @@ const BudgetPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("https://fin-track-be.vercel.app/api/categories", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get("categories");
 
       const userCategories = res.data || [];
       const fallbackDefaults = [
@@ -82,12 +97,7 @@ const BudgetPage = () => {
   const fetchBudgets = async () => {
     const targetMonth = new Date().toISOString().slice(0, 7);
     try {
-      const res = await axios.get(
-        `https://fin-track-be.vercel.app/api/budget?month=${targetMonth}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await api.get(`budget?month=${targetMonth}`);
       // Only filter out 'Saving Goal', keep all others (even if budget is 0)
       setBudgets(res.data.filter(b => b.name !== "Saving Goal"));
       // Show reset notification if all budgets are 0 (optional)
@@ -103,9 +113,7 @@ const BudgetPage = () => {
 
   const fetchForecast = async () => {
     try {
-      const res = await axios.get("https://fin-track-be.vercel.app/api/budget/forecast", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get("budget/forecast");
       setForecast(res.data);
     } catch (err) {
       console.error("Forecast fetch failed:", err);
@@ -119,9 +127,7 @@ const BudgetPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://fin-track-be.vercel.app/api/budget", form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.post("budget", form);
       await fetchBudgets();
       await fetchForecast();
       setForm({ ...form, categoryName: "", budget: "" });
@@ -144,9 +150,7 @@ const BudgetPage = () => {
       console.log("Starting auto budget generation...");
 
       // Fetch categories
-      const catRes = await axios.get("https://fin-track-be.vercel.app/api/categories", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const catRes = await api.get("categories");
       const userCategories = catRes.data || [];
       console.log("User categories:", userCategories);
 
@@ -168,10 +172,7 @@ const BudgetPage = () => {
       const monthStart = `${autoBudgetMonth}-01`;
       console.log("Selected month:", autoBudgetMonth, "Year:", year, "Month:", monthNum);
 
-      const incomeRes = await axios.get(
-        `https://fin-track-be.vercel.app/api/transactions/summary?interval=monthly`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const incomeRes = await api.get(`transactions/summary?interval=monthly`);
       console.log("Income response:", incomeRes.data);
 
       // Find the correct month label
@@ -195,10 +196,7 @@ const BudgetPage = () => {
       console.log("Generated budgets:", budgets);
 
       // Check if budgets already exist for this month
-      const budgetRes = await axios.get(
-        `https://fin-track-be.vercel.app/api/budget?month=${autoBudgetMonth}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const budgetRes = await api.get(`budget?month=${autoBudgetMonth}`);
       setAutoBudgetExists((budgetRes.data || []).some(b => b.budget > 0));
 
       setAutoBudgets(budgets);
@@ -223,9 +221,8 @@ const BudgetPage = () => {
     try {
       await Promise.all(
         autoBudgets.map(b =>
-          axios.post("https://fin-track-be.vercel.app/api/budget",
-            { categoryName: b.category, budget: b.budget, month: autoBudgetMonth },
-            { headers: { Authorization: `Bearer ${token}` } }
+          api.post("budget",
+            { categoryName: b.category, budget: b.budget, month: autoBudgetMonth }
           )
         )
       );
@@ -243,41 +240,40 @@ const BudgetPage = () => {
   const autoBudgetTotal = autoBudgets.reduce((sum, b) => sum + Number(b.budget), 0);
 
   const handleEditBudget = async (categoryId, newBudget) => {
+    setEditLoading(categoryId);
     try {
-      await axios.put(
-        `https://fin-track-be.vercel.app/api/budget/${categoryId}`,
-        { budget: newBudget },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.put(`budget/${categoryId}`, { budget: newBudget });
       await fetchBudgets();
       await fetchForecast();
       setEditingBudget(null);
     } catch (err) {
-      console.error("Failed to update budget:", err);
+      console.error("Failed to edit budget:", err);
       alert("Failed to update budget");
+    } finally {
+      setEditLoading(null);
     }
   };
 
   const handleDeleteBudget = async (budgetId) => {
+    setDeleteLoading(budgetId);
     if (!window.confirm('Are you sure you want to delete this budget?')) return;
     try {
-      await axios.delete(`https://fin-track-be.vercel.app/api/budget/${budgetId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`budget/${budgetId}`);
       await fetchBudgets();
       await fetchForecast();
     } catch (err) {
       alert('Failed to delete budget');
       console.error('Failed to delete budget:', err);
+    } finally {
+      setDeleteLoading(null);
     }
   };
 
   const handleManualReset = async () => {
     if (window.confirm("This will reset all budgets to 0 and save current month's data to history. Continue?")) {
+      setResetLoading(true);
       try {
-        await axios.post("https://fin-track-be.vercel.app/api/budget/reset", { month: new Date().toISOString().slice(0, 7) }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await api.post("budget/reset", { month: new Date().toISOString().slice(0, 7) });
         await fetchBudgets();
         await fetchForecast();
         alert("Budgets have been reset successfully!");
@@ -285,9 +281,46 @@ const BudgetPage = () => {
       } catch (err) {
         console.error("Failed to reset budgets:", err);
         alert("Failed to reset budgets");
+      } finally {
+        setResetLoading(false);
       }
     }
   };
+
+  // Skeleton loading component for budget cards
+  const BudgetSkeleton = () => (
+    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 flex flex-col gap-3 border border-gray-200 dark:border-gray-800 animate-pulse">
+      <div className="flex justify-between items-center mb-2">
+        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+        <div className="flex items-center gap-2">
+          <div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
+      </div>
+      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-2"></div>
+      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
+      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+    </div>
+  );
+
+  // Show loading screen while initial data is being fetched
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Loading Budget Page...
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Fetching your budget data
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -324,12 +357,20 @@ const BudgetPage = () => {
         <div className="flex justify-between items-center mb-6 border-b pb-4 dark:border-gray-800">
           <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">Budget</h2>
           <div className="flex gap-3">
-            {/* Manual Reset Button (for testing) */}
+            {/* Manual Reset Button */}
             <button
               onClick={handleManualReset}
-              className="bg-red-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
+              disabled={resetLoading}
+              className="bg-red-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 flex items-center gap-2 disabled:opacity-60"
             >
-              Manual Reset
+              {resetLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Resetting...
+                </>
+              ) : (
+                'Manual Reset'
+              )}
             </button>
             {/* Auto Budget Button */}
             <button
@@ -370,6 +411,8 @@ const BudgetPage = () => {
                 const remainingBudget = Math.max(budget - spent, 0);
                 const safeDailySpend = daysLeft > 0 ? (remainingBudget / daysLeft) : 0;
                 const isEditing = editingBudget === item.id;
+                const isEditLoading = editLoading === item.id;
+                const isDeleteLoading = deleteLoading === item.id;
 
                 return (
                   <div key={index} className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 flex flex-col gap-3 border border-gray-200 dark:border-gray-800 hover:shadow-2xl transition-shadow">
@@ -378,19 +421,29 @@ const BudgetPage = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setEditingBudget(item.id)}
-                          className="text-gray-500 hover:text-blue-600 transition-colors"
+                          disabled={isEditLoading || isDeleteLoading}
+                          className="text-gray-500 hover:text-blue-600 transition-colors disabled:opacity-50"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                          </svg>
+                          {isEditLoading ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                          ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                          )}
                         </button>
                         <button
                           onClick={() => handleDeleteBudget(item.id)}
-                          className="text-gray-500 hover:text-red-600 transition-colors ml-2"
+                          disabled={isEditLoading || isDeleteLoading}
+                          className="text-gray-500 hover:text-red-600 transition-colors ml-2 disabled:opacity-50"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H3.5a.5.5 0 000 1h13a.5.5 0 000-1H15V3a1 1 0 00-1-1H6zm2 5a1 1 0 00-1 1v7a1 1 0 102 0V8a1 1 0 00-1-1zm4 1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clipRule="evenodd" />
-                          </svg>
+                          {isDeleteLoading ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
+                          ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H3.5a.5.5 0 000 1h13a.5.5 0 000-1H15V3a1 1 0 00-1-1H6zm2 5a1 1 0 00-1 1v7a1 1 0 102 0V8a1 1 0 00-1-1zm4 1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clipRule="evenodd" />
+                            </svg>
+                          )}
                         </button>
                       </div>
                     </div>
