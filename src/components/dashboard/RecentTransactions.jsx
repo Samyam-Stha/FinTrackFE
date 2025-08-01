@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import {
   Table,
   TableBody,
@@ -14,14 +14,13 @@ import { format } from "date-fns";
 
 export function RecentTransactions() {
   const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const token = localStorage.getItem("token");
+      setIsLoading(true);
       try {
-        const res = await axios.get("https://fin-track-be.vercel.app/api/transactions", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("transactions");
 
         const now = new Date();
         const currentMonth = now.getMonth();
@@ -42,11 +41,29 @@ export function RecentTransactions() {
         setTransactions(filtered);
       } catch (err) {
         console.error("Failed to fetch transactions:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchTransactions();
   }, []);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[300px]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Loading recent transactions...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full overflow-x-auto">
@@ -69,10 +86,10 @@ export function RecentTransactions() {
               <TableCell>{transaction.category}</TableCell>
               <TableCell
                 className={`text-right ${transaction.type === "expense"
-                    ? "text-red-500"
-                    : transaction.type === "income"
-                      ? "text-green-500"
-                      : ""
+                  ? "text-red-500"
+                  : transaction.type === "income"
+                    ? "text-green-500"
+                    : ""
                   }`}
               >
                 Rs. {Number(transaction.amount).toFixed(2)}

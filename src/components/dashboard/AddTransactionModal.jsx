@@ -19,6 +19,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -104,6 +105,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const dateObj = new Date(form.date);
       const formData = {
@@ -125,12 +127,14 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
       } else {
         alert("Error adding transaction.");
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const inputBase = `w-full px-3 py-2 rounded border ${isDark
-      ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-      : "bg-white border-gray-300 text-black"
+    ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400"
+    : "bg-white border-gray-300 text-black"
     }`;
 
   return (
@@ -206,8 +210,8 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
               <select
                 name="category"
                 className={`${inputBase} ${form.type === "income"
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : ""
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  : ""
                   }`}
                 value={form.category}
                 onChange={handleChange}
@@ -263,9 +267,20 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-medium py-2 rounded hover:bg-blue-700"
+            disabled={isSubmitting}
+            className={`w-full font-medium py-2 rounded transition-all duration-200 ${isSubmitting
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700'
+              } text-white flex items-center justify-center gap-2`}
           >
-            Submit
+            {isSubmitting ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                Submitting...
+              </>
+            ) : (
+              'Submit'
+            )}
           </button>
         </form>
       </div>

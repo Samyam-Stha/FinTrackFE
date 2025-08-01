@@ -12,7 +12,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import axios from "axios";
+import api from "../../api/axios";
 import { format, parseISO, startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, getWeek } from "date-fns";
 import { getCurrentUser } from "@/utils/useAuth";
 import { formatNPR } from "../../utils/formatCurrency";
@@ -21,6 +21,7 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
   const [data, setData] = useState([]);
   const [totals, setTotals] = useState({ income: 0, expense: 0 });
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const user = getCurrentUser();
 
   useEffect(() => {
@@ -28,14 +29,9 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
   }, [interval]);
 
   const fetchSummary = async () => {
-    const token = localStorage.getItem("token");
+    setIsLoading(true);
     try {
-      const res = await axios.get(
-        `https://fin-track-be.vercel.app/api/transactions/summary?interval=${interval}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await api.get(`transactions/summary?interval=${interval}`);
 
       if (res.data.data) {
         // Calculate totals based on the selected interval
@@ -93,6 +89,8 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
       setError("Failed to load data");
       setData([]);
       setTotals({ income: 0, expense: 0 });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -180,6 +178,8 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
     );
   }
 
+
+
   if (!data || data.length === 0) {
     return (
       <div className="text-gray-500 text-center p-4">
@@ -211,7 +211,18 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
 
       <div className={isDark ? "recharts-dark" : ""}>
         <ResponsiveContainer width="100%" height={400}>
-          {chartType === "Bar Chart" ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Loading chart data...
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : chartType === "Bar Chart" ? (
             <BarChart
               data={data}
               margin={{ top: 20, right: 0, left: 0, bottom: 30 }}
@@ -393,7 +404,8 @@ const Overview = ({ isDark, interval = "monthly", showTotals = false, chartType 
                 activeDot={{ r: 6 }}
               />
             </LineChart>
-          )}
+          )
+          }
         </ResponsiveContainer>
       </div>
     </div>

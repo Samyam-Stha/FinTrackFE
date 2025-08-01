@@ -19,9 +19,10 @@ const BudgetPage = () => {
   const [lastCheckedMonth, setLastCheckedMonth] = useState("");
   const [autoBudgetMonth, setAutoBudgetMonth] = useState(() => {
     const now = new Date();
-    return now.toISOString().slice(0, 7);
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   });
   const [autoBudgetExists, setAutoBudgetExists] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -218,24 +219,24 @@ const BudgetPage = () => {
   };
 
   const handleAutoBudgetConfirm = async () => {
+    setConfirmLoading(true);
     try {
       await Promise.all(
         autoBudgets.map(b =>
-          axios.post(
-            "https://fin-track-be.vercel.app/api/budget",
+          axios.post("https://fin-track-be.vercel.app/api/budget",
             { categoryName: b.category, budget: b.budget, month: autoBudgetMonth },
             { headers: { Authorization: `Bearer ${token}` } }
           )
         )
       );
+      await fetchBudgets();
       setShowAutoBudget(false);
       setAutoBudgets([]);
-      await fetchBudgets();
-      await fetchForecast();
-      alert("Auto budgets saved!");
     } catch (err) {
-      alert("Failed to save auto budgets");
-      console.error(err);
+      console.error("Failed to save budgets:", err);
+      alert("Error saving budgets. Please try again.");
+    } finally {
+      setConfirmLoading(false);
     }
   };
 
@@ -292,7 +293,7 @@ const BudgetPage = () => {
     <div>
       <div className="p-2 max-w-5xl mx-auto space-y-10">
         {/* Monthly Reset Notification */}
-        {showResetNotification && (
+        {/* {showResetNotification && (
           <div className="mb-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-5 shadow-lg animate-fade-in">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -318,7 +319,7 @@ const BudgetPage = () => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="flex justify-between items-center mb-6 border-b pb-4 dark:border-gray-800">
           <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">Budget</h2>
@@ -333,10 +334,17 @@ const BudgetPage = () => {
             {/* Auto Budget Button */}
             <button
               onClick={handleAutoBudget}
-              className="bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center gap-2"
               disabled={autoBudgetLoading}
             >
-              {autoBudgetLoading ? "Calculating..." : "Divide Budget"}
+              {autoBudgetLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Calculating...
+                </>
+              ) : (
+                'Divide Budget'
+              )}
             </button>
           </div>
         </div>
@@ -565,10 +573,17 @@ const BudgetPage = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
-                  disabled={autoBudgetTotal > autoBudgetIncome}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60 flex items-center gap-2"
+                  disabled={autoBudgetTotal > autoBudgetIncome || confirmLoading}
                 >
-                  Confirm Budgets
+                  {confirmLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    'Confirm Budgets'
+                  )}
                 </button>
               </div>
             </form>

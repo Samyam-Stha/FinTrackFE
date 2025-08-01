@@ -8,7 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import axios from "axios";
+import api from "../../api/axios";
 
 const COLORS = [
   "#8884d8", // purple
@@ -39,19 +39,15 @@ const COLORS = [
 
 export default function ExpensePieChart({ isDark, interval }) {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Debug: log interval to verify updates
   console.log('ExpensePieChart interval:', interval);
 
   const fetchExpenses = async () => {
-    const token = localStorage.getItem("token");
+    setIsLoading(true);
     try {
-      const res = await axios.get(
-        `https://fin-track-be.vercel.app/api/transactions/expenses/by-category?interval=${interval}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await api.get(`transactions/expenses/by-category?interval=${interval}`);
 
       const formatted = res.data.map((item) => ({
         ...item,
@@ -61,6 +57,8 @@ export default function ExpensePieChart({ isDark, interval }) {
       setData(formatted);
     } catch (err) {
       console.error("Error loading expense chart:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +66,23 @@ export default function ExpensePieChart({ isDark, interval }) {
     fetchExpenses();
   }, [interval]);
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[300px]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Loading spending data...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state when no data
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-[300px] text-gray-500">
