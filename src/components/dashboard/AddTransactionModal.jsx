@@ -269,8 +269,8 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
             type="submit"
             disabled={isSubmitting}
             className={`w-full font-medium py-2 rounded transition-all duration-200 ${isSubmitting
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
               } text-white flex items-center justify-center gap-2`}
           >
             {isSubmitting ? (
