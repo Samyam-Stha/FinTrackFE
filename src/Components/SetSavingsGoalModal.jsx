@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DollarSign, Target } from 'lucide-react';
-import axios from 'axios';
+import api from '../api/axios';
 import { formatNPR } from '@/utils/formatCurrency';
 
 const SetSavingsGoalModal = ({ isOpen, onClose, onGoalSet, currentGoal = 0 }) => {
@@ -19,10 +19,8 @@ const SetSavingsGoalModal = ({ isOpen, onClose, onGoalSet, currentGoal = 0 }) =>
         setError('');
 
         try {
-            const response = await axios.post("https://fin-track-be.vercel.app/api/savings/goal", {
+            const response = await api.post("savings/goal", {
                 initialGoal: parseFloat(goal)
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
 
             onGoalSet(response.data);
