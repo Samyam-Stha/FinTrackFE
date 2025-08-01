@@ -155,6 +155,18 @@ const Dashboard = () => {
     fetchTransactions();
   };
 
+  // Comprehensive refresh function for when transaction is added
+  const handleTransactionAdded = async () => {
+    // Clear cache
+    localStorage.removeItem('dashboardCache');
+
+    // Refetch all data
+    await fetchTransactions();
+
+    // Force refresh of child components by updating their keys
+    setShowModal(false);
+  };
+
   const getSavingRateColor = (rate) => {
     rate = parseFloat(rate);
     if (rate >= 50) return "text-green-600";
@@ -298,14 +310,8 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <RecentTransactions
-              transactions={transactions.filter((t) => {
-                const date = new Date(t.date);
-                const now = new Date();
-                return (
-                  date.getMonth() === now.getMonth() &&
-                  date.getFullYear() === now.getFullYear()
-                );
-              })}
+              key={`recent-transactions-${transactions.length}`}
+              transactions={transactions}
             />
           </CardContent>
         </Card>
@@ -315,7 +321,11 @@ const Dashboard = () => {
             <CardDescription>Where your money goes</CardDescription>
           </CardHeader>
           <CardContent>
-            <ExpensePieChart isDark={document.documentElement.classList.contains("dark")} interval="monthly" />
+            <ExpensePieChart
+              key={`expense-chart-${transactions.length}`}
+              isDark={document.documentElement.classList.contains("dark")}
+              interval="monthly"
+            />
           </CardContent>
         </Card>
       </div>
@@ -337,14 +347,19 @@ const Dashboard = () => {
           <CardDescription>Income vs Expense (Monthly)</CardDescription>
         </CardHeader>
         <CardContent>
-          <Overview isDark={document.documentElement.classList.contains("dark")} interval="monthly" chartType="Bar Chart" />
+          <Overview
+            key={`overview-chart-${transactions.length}`}
+            isDark={document.documentElement.classList.contains("dark")}
+            interval="monthly"
+            chartType="Bar Chart"
+          />
         </CardContent>
       </Card>
 
       {showModal && (
         <AddTransactionModal
           onClose={() => setShowModal(false)}
-          onSuccess={fetchTransactions}
+          onSuccess={handleTransactionAdded}
         />
       )}
     </div>

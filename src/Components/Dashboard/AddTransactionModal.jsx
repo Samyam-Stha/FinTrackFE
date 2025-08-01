@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import { format } from "date-fns";
 
 export default function AddTransactionModal({ onClose, onSuccess }) {
@@ -113,9 +113,7 @@ export default function AddTransactionModal({ onClose, onSuccess }) {
         date: dateObj.toISOString(),
       };
 
-      await axios.post("https://fin-track-be.vercel.app/api/transactions", formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.post("transactions", formData);
 
       onSuccess?.();
       onClose();

@@ -12,44 +12,24 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 
-export function RecentTransactions() {
-  const [transactions, setTransactions] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+export function RecentTransactions({ transactions = [] }) {
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      setIsLoading(true);
-      try {
-        const res = await api.get("transactions");
+  // Filter and sort transactions for current month
+  const currentMonthTransactions = transactions
+    .filter((t) => {
+      const txDate = new Date(t.date);
+      const now = new Date();
+      return (
+        txDate.getMonth() === now.getMonth() &&
+        txDate.getFullYear() === now.getFullYear()
+      );
+    })
+    .sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    ); // sort by latest
 
-        const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
-
-        const filtered = res.data
-          .filter((t) => {
-            const txDate = new Date(t.date);
-            return (
-              txDate.getMonth() === currentMonth &&
-              txDate.getFullYear() === currentYear
-            );
-          })
-          .sort(
-            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-          ); // sort by latest
-
-        setTransactions(filtered);
-      } catch (err) {
-        console.error("Failed to fetch transactions:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchTransactions();
-  }, []);
-
-  // Show loading state
+  // Show loading state if no transactions provided
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[300px]">
@@ -77,7 +57,7 @@ export function RecentTransactions() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions.map((transaction) => (
+          {currentMonthTransactions.map((transaction) => (
             <TableRow key={transaction.id}>
               <TableCell className="font-medium">
                 {format(new Date(transaction.date), "d MMMM yyyy")}
