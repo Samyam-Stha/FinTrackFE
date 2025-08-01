@@ -15,10 +15,17 @@ export const AuthForm = () => {
   const [showReset, setShowReset] = useState(false);
   const [resetCode, setResetCode] = useState("");
   const [resetPassword, setResetPassword] = useState("");
+  const [signUpLoading, setSignUpLoading] = useState(false);
+  const [signInLoading, setSignInLoading] = useState(false);
+  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setSignUpLoading(true);
     const { username, email, password } = e.target;
 
     try {
@@ -49,11 +56,14 @@ export const AuthForm = () => {
     } catch (err) {
       toast.error("Network error or server not running.");
       console.error("Sign up error:", err);
+    } finally {
+      setSignUpLoading(false);
     }
   };
 
   const handleVerification = async (e) => {
     e.preventDefault();
+    setVerificationLoading(true);
     try {
       const res = await fetch("https://fin-track-be.vercel.app/api/auth/verify", {
         method: "POST",
@@ -75,11 +85,14 @@ export const AuthForm = () => {
     } catch (err) {
       toast.error("Network error or server not running.");
       console.error("Verification error:", err);
+    } finally {
+      setVerificationLoading(false);
     }
   };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setSignInLoading(true);
     const { email, password } = e.target;
 
     try {
@@ -103,10 +116,13 @@ export const AuthForm = () => {
     } catch (err) {
       toast.error("Network error or server not running.");
       console.error(err);
+    } finally {
+      setSignInLoading(false);
     }
   };
 
   const handleResendCode = async () => {
+    setResendLoading(true);
     try {
       const res = await fetch("https://fin-track-be.vercel.app/api/auth/resend", {
         method: "POST",
@@ -122,11 +138,14 @@ export const AuthForm = () => {
     } catch (err) {
       toast.error("Network error or server not running.");
       console.error("Resend code error:", err);
+    } finally {
+      setResendLoading(false);
     }
   };
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+    setForgotLoading(true);
     try {
       const res = await fetch("https://fin-track-be.vercel.app/api/auth/request-reset", {
         method: "POST",
@@ -143,11 +162,14 @@ export const AuthForm = () => {
     } catch (err) {
       toast.error("Network error or server not running.");
       console.error("Forgot password error:", err);
+    } finally {
+      setForgotLoading(false);
     }
   };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
+    setResetLoading(true);
     try {
       const res = await fetch("https://fin-track-be.vercel.app/api/auth/verify-reset", {
         method: "POST",
@@ -172,6 +194,8 @@ export const AuthForm = () => {
     } catch (err) {
       toast.error("Network error or server not running.");
       console.error("Reset password error:", err);
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -196,9 +220,25 @@ export const AuthForm = () => {
                 pattern="[0-9]{6}"
                 title="Enter the 6-digit code"
               />
-              <button className="auth-form">Verify</button>
-              <button type="button" className="auth-form" style={{ marginTop: '10px' }} onClick={handleResendCode}>
-                Resend Code
+              <button className="auth-form" disabled={verificationLoading}>
+                {verificationLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"></div>
+                    Verifying...
+                  </>
+                ) : (
+                  'Verify'
+                )}
+              </button>
+              <button type="button" className="auth-form" style={{ marginTop: '10px' }} onClick={handleResendCode} disabled={resendLoading}>
+                {resendLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"></div>
+                    Sending...
+                  </>
+                ) : (
+                  'Resend Code'
+                )}
               </button>
             </form>
           ) : (
@@ -227,7 +267,16 @@ export const AuthForm = () => {
                 minLength={6}
                 title="Password must be at least 6 characters long"
               />
-              <button className="auth-form">Sign Up</button>
+              <button className="auth-form" disabled={signUpLoading}>
+                {signUpLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"></div>
+                    Signing Up...
+                  </>
+                ) : (
+                  'Sign Up'
+                )}
+              </button>
             </form>
           )}
         </div>
@@ -258,7 +307,16 @@ export const AuthForm = () => {
                   minLength={6}
                   title="Password must be at least 6 characters long"
                 />
-                <button className="auth-form">Reset Password</button>
+                <button className="auth-form" disabled={resetLoading}>
+                  {resetLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"></div>
+                      Resetting...
+                    </>
+                  ) : (
+                    'Reset Password'
+                  )}
+                </button>
               </form>
             ) : (
               <form onSubmit={handleForgotPassword}>
@@ -274,7 +332,16 @@ export const AuthForm = () => {
                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                   title="Please enter a valid email address"
                 />
-                <button className="auth-form">Send Reset Code</button>
+                <button className="auth-form" disabled={forgotLoading}>
+                  {forgotLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Reset Code'
+                  )}
+                </button>
                 <button type="button" className="auth-form" style={{ marginTop: '10px' }} onClick={() => setShowForgot(false)}>
                   Back to Sign In
                 </button>
@@ -301,7 +368,16 @@ export const AuthForm = () => {
                 title="Password must be at least 6 characters long"
               />
               <a href="#" onClick={e => { e.preventDefault(); setShowForgot(true); }}>Forgot your password?</a>
-              <button className="auth-form">Sign In</button>
+              <button className="auth-form" disabled={signInLoading}>
+                {signInLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"></div>
+                    Signing In...
+                  </>
+                ) : (
+                  'Sign In'
+                )}
+              </button>
             </form>
           )}
         </div>
